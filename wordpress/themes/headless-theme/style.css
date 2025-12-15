@@ -1,0 +1,16 @@
+/*
+Theme Name: Headless Theme
+Theme URI: https://example.com/headless-theme
+Author: Development Team
+Author URI: https://example.com
+Description: A minimal WordPress theme designed for headless CMS usage with NextJS frontend. This theme disables frontend rendering and redirects all requests to the NextJS application.
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 6.4
+Requires PHP: 8.2
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: headless-theme
+*/
+
+/* This theme has no frontend styles as it's designed for headless use */

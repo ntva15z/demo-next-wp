@@ -1,0 +1,10 @@
+# This directory is for WordPress plugins
+# Plugins will be mounted into the Docker container
+# 
+# Required plugins (install via WordPress admin or WP-CLI):
+# - WPGraphQL
+# - WPGraphQL for ACF
+# - Advanced Custom Fields (ACF)
+# - Yoast SEO
+# - WPGraphQL Yoast SEO Addon
+# - WP Webhooks
