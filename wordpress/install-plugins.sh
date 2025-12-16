@@ -128,6 +128,17 @@ main() {
     # Requirements: 10.2
     install_plugin "jwt-authentication-for-wp-rest-api" "JWT Authentication"
     
+    # 5. Install Advanced Custom Fields (ACF)
+    # Requirements: 1.5
+    # ACF provides custom fields for posts and products
+    install_plugin "advanced-custom-fields" "Advanced Custom Fields"
+    
+    # 6. Install WPGraphQL for ACF
+    # Requirements: 1.6
+    # Exposes ACF custom fields via GraphQL
+    # Note: This plugin is available on WordPress.org as wpgraphql-acf
+    install_plugin "wpgraphql-acf" "WPGraphQL for ACF"
+    
     log_info ""
     log_info "=========================================="
     log_info "Plugin installation complete!"
@@ -138,9 +149,16 @@ main() {
     log_info "Installed plugins:"
     wp plugin list --allow-root
     
+    # Verify all plugins are active
+    # Requirements: 1.8
+    verify_all_plugins
+    
     log_info ""
     log_info "Verifying GraphQL endpoint..."
     verify_graphql_endpoint
+    
+    # Verify WooCommerce GraphQL integration
+    verify_woocommerce_graphql
     
     log_info ""
     log_info "Next steps:"
@@ -151,7 +169,63 @@ main() {
     log_info "5. Test GraphQL endpoint at: http://localhost:8800/graphql"
 }
 
+# Verify a single plugin is active
+# Requirements: 1.8
+verify_plugin_active() {
+    local plugin_slug=$1
+    local plugin_name=$2
+    
+    if wp plugin is-active "$plugin_slug" --allow-root 2>/dev/null; then
+        log_info "✓ $plugin_name is active"
+        return 0
+    else
+        log_error "✗ $plugin_name is NOT active"
+        return 1
+    fi
+}
+
+# Verify all required plugins are active
+# Requirements: 1.8
+verify_all_plugins() {
+    log_info ""
+    log_info "=========================================="
+    log_info "Verifying all plugins are active..."
+    log_info "=========================================="
+    
+    local all_active=true
+    
+    # List of required plugins to verify
+    local plugins=(
+        "woocommerce:WooCommerce"
+        "wp-graphql:WPGraphQL"
+        "wp-graphql-woocommerce:WooGraphQL"
+        "jwt-authentication-for-wp-rest-api:JWT Authentication"
+        "advanced-custom-fields:Advanced Custom Fields"
+        "wpgraphql-acf:WPGraphQL for ACF"
+    )
+    
+    for plugin_entry in "${plugins[@]}"; do
+        local plugin_slug="${plugin_entry%%:*}"
+        local plugin_name="${plugin_entry##*:}"
+        
+        if ! verify_plugin_active "$plugin_slug" "$plugin_name"; then
+            all_active=false
+        fi
+    done
+    
+    if [ "$all_active" = true ]; then
+        log_info ""
+        log_info "All plugins are active and ready!"
+        return 0
+    else
+        log_error ""
+        log_error "Some plugins failed to activate. Please check the logs above."
+        return 1
+    fi
+}
+
 # Verify GraphQL endpoint is working
+# Requirements: 1.8
 verify_graphql_endpoint() {
     log_info "Testing GraphQL endpoint..."
     
@@ -167,11 +241,37 @@ verify_graphql_endpoint() {
         "$graphql_url" 2>/dev/null || echo "")
     
     if echo "$response" | grep -q "__typename"; then
-        log_info "GraphQL endpoint is working!"
-        log_info "Endpoint URL: $graphql_url"
+        log_info "✓ GraphQL endpoint is working!"
+        log_info "  Endpoint URL: $graphql_url"
+        return 0
     else
-        log_warn "Could not verify GraphQL endpoint. It may need WordPress to be fully initialized."
-        log_warn "Try accessing $graphql_url manually after WordPress is ready."
+        log_warn "✗ Could not verify GraphQL endpoint. It may need WordPress to be fully initialized."
+        log_warn "  Try accessing $graphql_url manually after WordPress is ready."
+        return 1
+    fi
+}
+
+# Verify WooCommerce GraphQL types are available
+# Requirements: 1.8
+verify_woocommerce_graphql() {
+    log_info "Testing WooCommerce GraphQL types..."
+    
+    local query='{"query":"{ __type(name: \"Product\") { name } }"}'
+    local site_url=$(wp option get siteurl --allow-root 2>/dev/null || echo "http://localhost:8800")
+    local graphql_url="${site_url}/graphql"
+    
+    local response=$(curl -s -X POST \
+        -H "Content-Type: application/json" \
+        -d "$query" \
+        "$graphql_url" 2>/dev/null || echo "")
+    
+    if echo "$response" | grep -q "Product"; then
+        log_info "✓ WooCommerce GraphQL types are available!"
+        return 0
+    else
+        log_warn "✗ WooCommerce GraphQL types not yet available."
+        log_warn "  This may require WooCommerce setup to be completed first."
+        return 1
     fi
 }
 

@@ -258,3 +258,11 @@ if (file_exists(get_template_directory() . '/inc/webhooks.php')) {
 if (file_exists(get_template_directory() . '/inc/woographql-setup.php')) {
     require_once get_template_directory() . '/inc/woographql-setup.php';
 }
+
+/**
+ * Include ACF field groups configuration
+ * Requirements: 8.4, 4.1, 4.2
+ */
+if (file_exists(get_template_directory() . '/inc/acf-field-groups.php')) {
+    require_once get_template_directory() . '/inc/acf-field-groups.php';
+}
