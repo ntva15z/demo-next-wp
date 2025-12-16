@@ -93,33 +93,45 @@ Or via WordPress Admin: **Appearance > Themes > Headless Theme > Activate**
 
 ## Webhook Setup
 
-To enable real-time content updates in NextJS:
+To enable real-time content updates in NextJS, configure webhooks to trigger cache revalidation when content is published or updated.
 
-### 1. Configure WP Webhooks Plugin
+> **📖 For detailed setup instructions, see [WEBHOOK_SETUP.md](./WEBHOOK_SETUP.md)**
 
-1. Go to **WP Webhooks > Send Data**
-2. Add new webhook for each event:
-   - Post Published
-   - Post Updated
-   - Page Published
-   - Page Updated
+### Quick Setup
 
-### 2. Webhook Configuration
+1. Install and activate **WP Webhooks** plugin
+2. Go to **WP Webhooks > Send Data**
+3. Create webhooks for post, page, and menu updates
 
-- **Webhook URL**: `http://localhost:3000/api/revalidate`
-- **Method**: POST
-- **Headers**:
-  ```
-  Content-Type: application/json
-  x-revalidate-secret: your-secret-key-here
-  ```
-- **Body Format**:
-  ```json
-  {
-    "type": "post",
-    "slug": "{post_slug}"
-  }
-  ```
+### Webhook Configuration Summary
+
+| Event | Type | Endpoint |
+|-------|------|----------|
+| Post Published/Updated | `post` | `/api/revalidate` |
+| Page Published/Updated | `page` | `/api/revalidate` |
+| Menu Updated | `menu` | `/api/revalidate` |
+
+### Required Headers
+```
+Content-Type: application/json
+x-revalidate-secret: your-secret-key-minimum-32-characters
+```
+
+### Request Body Format
+```json
+{
+  "type": "post",
+  "slug": "{post_name}"
+}
+```
+
+### Testing Webhooks
+```bash
+curl -X POST http://localhost:3000/api/revalidate \
+  -H "Content-Type: application/json" \
+  -H "x-revalidate-secret: your-secret-key" \
+  -d '{"type": "post", "slug": "hello-world"}'
+```
 
 ## Environment Variables
 
