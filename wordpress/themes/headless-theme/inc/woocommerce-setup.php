@@ -177,8 +177,10 @@ add_action('init', 'headless_configure_tax_display', 10);
  */
 function headless_format_vnd_price($formatted_price, $args, $unformatted_price, $original_price) {
     if (get_woocommerce_currency() === 'VND') {
+        // Ensure we have a numeric value
+        $price = is_array($unformatted_price) ? 0 : (float) $unformatted_price;
         // Remove decimals for VND
-        $formatted_price = number_format($unformatted_price, 0, ',', '.') . ' ₫';
+        $formatted_price = number_format($price, 0, ',', '.') . ' ₫';
     }
     return $formatted_price;
 }
