@@ -172,6 +172,24 @@ add_filter('woocommerce_payment_gateways', 'headless_add_vnpay_gateway');
 class WC_Gateway_VNPay_Headless extends WC_Payment_Gateway {
     
     /**
+     * Test mode flag
+     * @var bool
+     */
+    protected bool $testmode;
+    
+    /**
+     * VNPay TMN Code
+     * @var string
+     */
+    protected string $tmn_code;
+    
+    /**
+     * VNPay Hash Secret
+     * @var string
+     */
+    protected string $hash_secret;
+    
+    /**
      * Constructor for the gateway
      */
     public function __construct() {
@@ -540,6 +558,30 @@ add_filter('woocommerce_payment_gateways', 'headless_add_momo_gateway');
  * Requirements: 8.3
  */
 class WC_Gateway_MoMo_Headless extends WC_Payment_Gateway {
+    
+    /**
+     * Test mode flag
+     * @var bool
+     */
+    protected bool $testmode;
+    
+    /**
+     * MoMo Partner Code
+     * @var string
+     */
+    protected string $partner_code;
+    
+    /**
+     * MoMo Access Key
+     * @var string
+     */
+    protected string $access_key;
+    
+    /**
+     * MoMo Secret Key
+     * @var string
+     */
+    protected string $secret_key;
     
     /**
      * Constructor for the gateway

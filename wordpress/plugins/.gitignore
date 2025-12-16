@@ -1,0 +1,9 @@
+# Ignore all plugins except specific files
+*
+!.gitignore
+!.gitkeep
+!index.php
+!hello.php
+
+# These plugins are installed via install-plugins.sh script
+# Do not commit them to version control
