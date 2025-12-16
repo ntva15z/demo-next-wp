@@ -152,3 +152,109 @@ function headless_add_image_sizes() {
     add_image_size('og-image', 1200, 630, true);
 }
 add_action('after_setup_theme', 'headless_add_image_sizes');
+
+/**
+ * Include WooCommerce configuration
+ */
+if (file_exists(get_template_directory() . '/inc/woocommerce-setup.php')) {
+    require_once get_template_directory() . '/inc/woocommerce-setup.php';
+}
+
+/**
+ * Include product attributes configuration
+ */
+if (file_exists(get_template_directory() . '/inc/product-attributes.php')) {
+    require_once get_template_directory() . '/inc/product-attributes.php';
+}
+
+/**
+ * Include product categories configuration
+ */
+if (file_exists(get_template_directory() . '/inc/product-categories.php')) {
+    require_once get_template_directory() . '/inc/product-categories.php';
+}
+
+/**
+ * Include product collections taxonomy
+ */
+if (file_exists(get_template_directory() . '/inc/product-collections.php')) {
+    require_once get_template_directory() . '/inc/product-collections.php';
+}
+
+/**
+ * Include product tags configuration
+ */
+if (file_exists(get_template_directory() . '/inc/product-tags.php')) {
+    require_once get_template_directory() . '/inc/product-tags.php';
+}
+
+/**
+ * Include inventory management configuration
+ */
+if (file_exists(get_template_directory() . '/inc/inventory-management.php')) {
+    require_once get_template_directory() . '/inc/inventory-management.php';
+}
+
+/**
+ * Include pricing and promotions configuration
+ */
+if (file_exists(get_template_directory() . '/inc/pricing-promotions.php')) {
+    require_once get_template_directory() . '/inc/pricing-promotions.php';
+}
+
+/**
+ * Include shipping configuration
+ */
+if (file_exists(get_template_directory() . '/inc/shipping-configuration.php')) {
+    require_once get_template_directory() . '/inc/shipping-configuration.php';
+}
+
+/**
+ * Include payment gateways configuration
+ */
+if (file_exists(get_template_directory() . '/inc/payment-gateways.php')) {
+    require_once get_template_directory() . '/inc/payment-gateways.php';
+}
+
+/**
+ * Include order management configuration
+ */
+if (file_exists(get_template_directory() . '/inc/order-management.php')) {
+    require_once get_template_directory() . '/inc/order-management.php';
+}
+
+/**
+ * Include JWT authentication configuration
+ */
+if (file_exists(get_template_directory() . '/inc/jwt-authentication.php')) {
+    require_once get_template_directory() . '/inc/jwt-authentication.php';
+}
+
+/**
+ * Include customer account configuration
+ */
+if (file_exists(get_template_directory() . '/inc/customer-account.php')) {
+    require_once get_template_directory() . '/inc/customer-account.php';
+}
+
+/**
+ * Include product reviews configuration
+ */
+if (file_exists(get_template_directory() . '/inc/product-reviews.php')) {
+    require_once get_template_directory() . '/inc/product-reviews.php';
+}
+
+/**
+ * Include webhook integration for NextJS revalidation
+ */
+if (file_exists(get_template_directory() . '/inc/webhooks.php')) {
+    require_once get_template_directory() . '/inc/webhooks.php';
+}
+
+/**
+ * Include WooGraphQL configuration
+ * Requirements: 2.1, 2.2, 2.3, 2.4
+ */
+if (file_exists(get_template_directory() . '/inc/woographql-setup.php')) {
+    require_once get_template_directory() . '/inc/woographql-setup.php';
+}

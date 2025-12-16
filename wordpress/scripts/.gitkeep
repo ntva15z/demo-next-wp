@@ -1,0 +1,2 @@
+# This directory contains scripts for WordPress/WooCommerce setup
+# Scripts can be mounted into the container via docker-compose

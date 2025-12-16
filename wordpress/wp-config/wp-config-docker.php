@@ -36,6 +36,19 @@ define('WP_DEBUG_DISPLAY', false);
 // Headless mode settings
 define('HEADLESS_MODE_CLIENT_URL', getenv('HEADLESS_CLIENT_URL') ?: 'http://localhost:3000');
 
+// JWT Authentication configuration
+// Required for headless frontend authentication
+define('JWT_AUTH_SECRET_KEY', getenv('JWT_AUTH_SECRET_KEY') ?: 'your-jwt-secret-key-minimum-32-characters-long');
+define('JWT_AUTH_CORS_ENABLE', true);
+
+// WooCommerce configuration from environment
+define('WOOCOMMERCE_CURRENCY', getenv('WOOCOMMERCE_CURRENCY') ?: 'VND');
+define('WOOCOMMERCE_COUNTRY', getenv('WOOCOMMERCE_COUNTRY') ?: 'VN');
+
+// NextJS revalidation webhook configuration
+define('NEXTJS_REVALIDATE_URL', getenv('NEXTJS_REVALIDATE_URL') ?: 'http://localhost:3000/api/revalidate');
+define('NEXTJS_REVALIDATE_SECRET', getenv('NEXTJS_REVALIDATE_SECRET') ?: 'your-revalidate-secret-32-chars-here');
+
 // Disable file editing in admin
 define('DISALLOW_FILE_EDIT', true);
 

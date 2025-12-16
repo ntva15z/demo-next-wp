@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 /**
  * Content types that can be revalidated
  */
-export type RevalidateContentType = 'post' | 'page' | 'menu' | 'all';
+export type RevalidateContentType = 'post' | 'page' | 'menu' | 'product' | 'inventory' | 'order' | 'all';
 
 /**
  * Request body for revalidation webhook
@@ -12,6 +12,13 @@ export type RevalidateContentType = 'post' | 'page' | 'menu' | 'all';
 export interface RevalidateRequestBody {
   type: RevalidateContentType;
   slug?: string;
+  product_id?: number;
+  order_id?: number;
+  stock_status?: string;
+  stock_quantity?: number;
+  old_status?: string;
+  new_status?: string;
+  timestamp?: number;
 }
 
 /**
@@ -84,12 +91,49 @@ export function performRevalidation(
       revalidatedTags.push('menu');
       break;
 
+    case 'product':
+      revalidateTag('products', 'max');
+      revalidatedTags.push('products');
+      if (slug) {
+        revalidateTag(`product-${slug}`, 'max');
+        revalidatePath(`/shop/${slug}`);
+        revalidatedTags.push(`product-${slug}`);
+        revalidatedPaths.push(`/shop/${slug}`);
+      }
+      revalidatePath('/shop');
+      revalidatedPaths.push('/shop');
+      break;
+
+    case 'inventory':
+      revalidateTag('products', 'max');
+      revalidateTag('inventory', 'max');
+      revalidatedTags.push('products', 'inventory');
+      if (slug) {
+        revalidateTag(`product-${slug}`, 'max');
+        revalidatePath(`/shop/${slug}`);
+        revalidatedTags.push(`product-${slug}`);
+        revalidatedPaths.push(`/shop/${slug}`);
+      }
+      revalidatePath('/shop');
+      revalidatedPaths.push('/shop');
+      break;
+
+    case 'order':
+      revalidateTag('orders', 'max');
+      revalidatedTags.push('orders');
+      revalidatePath('/account/orders');
+      revalidatedPaths.push('/account/orders');
+      break;
+
     case 'all':
     default:
       revalidateTag('posts', 'max');
       revalidateTag('pages', 'max');
       revalidateTag('menu', 'max');
-      revalidatedTags.push('posts', 'pages', 'menu');
+      revalidateTag('products', 'max');
+      revalidateTag('inventory', 'max');
+      revalidateTag('orders', 'max');
+      revalidatedTags.push('posts', 'pages', 'menu', 'products', 'inventory', 'orders');
       break;
   }
 
@@ -131,7 +175,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Revalidat
     const { type, slug } = body;
 
     // Validate content type
-    const validTypes: RevalidateContentType[] = ['post', 'page', 'menu', 'all'];
+    const validTypes: RevalidateContentType[] = ['post', 'page', 'menu', 'product', 'inventory', 'order', 'all'];
     if (!validTypes.includes(type)) {
       return NextResponse.json(
         { message: `Invalid content type: ${type}` },
