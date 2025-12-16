@@ -37,6 +37,12 @@ docker compose exec wordpress wp plugin install wpgraphql-acf --activate --allow
 
 # Cài WooGraphQL từ GitHub
 docker compose exec wordpress wp plugin install https://github.com/wp-graphql/wp-graphql-woocommerce/releases/download/v0.19.0/wp-graphql-woocommerce.zip --activate --allow-root
+
+# Cài Yoast SEO (phiên bản tương thích với WP 6.4)
+docker compose exec wordpress wp plugin install wordpress-seo --version=23.0 --activate --allow-root
+
+# Cài WPGraphQL Yoast SEO Addon (expose SEO data qua GraphQL)
+docker compose exec wordpress wp plugin install add-wpgraphql-seo --activate --allow-root
 ```
 
 ### 3. Tạo dữ liệu mẫu
@@ -175,7 +181,20 @@ npm run lint                  # Lint check
 - **Checkout**: COD, VNPay, MoMo payment gateways
 - **Authentication**: JWT-based login/register
 - **Blog**: Posts với categories và product linking
-- **SEO**: Meta tags, JSON-LD structured data
+- **SEO**: Yoast SEO integration, meta tags, JSON-LD structured data
+
+## 📦 Plugins đã cài
+
+| Plugin | Version | Mục đích |
+|--------|---------|----------|
+| WooCommerce | 8.9.3 | E-commerce core |
+| WPGraphQL | 2.5.3 | GraphQL API |
+| WooGraphQL | 0.19.0 | WooCommerce GraphQL |
+| JWT Authentication | 1.4.1 | User authentication |
+| Advanced Custom Fields | 6.7.0 | Custom fields |
+| WPGraphQL for ACF | 2.4.1 | ACF GraphQL support |
+| Yoast SEO | 23.0 | SEO management |
+| WPGraphQL Yoast SEO | 5.0.0 | SEO GraphQL support |
 
 ## 📖 Documentation
 
