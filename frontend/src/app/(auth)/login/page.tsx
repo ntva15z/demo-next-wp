@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { login, user } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -13,41 +16,42 @@ export default function LoginPage() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  // Show success message if just registered
+  const registered = searchParams.get("registered") === "true";
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      router.push("/account");
+    }
+  }, [user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: formData.email,
-          password: formData.password,
-        }),
-      });
+    const result = await login(formData.email, formData.password);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Đăng nhập thất bại");
-      }
-
-      // Redirect to account page on success
+    if (result.success) {
       router.push("/account");
-      router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Có lỗi xảy ra");
-    } finally {
-      setLoading(false);
+    } else {
+      setError(result.error || "Đăng nhập thất bại");
     }
+    
+    setLoading(false);
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-8">
       <h1 className="text-2xl font-bold text-center mb-6">Đăng nhập</h1>
+
+      {registered && (
+        <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-600 rounded-md text-sm">
+          Đăng ký thành công! Vui lòng đăng nhập.
+        </div>
+      )}
 
       {error && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">

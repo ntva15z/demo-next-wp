@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 /**
  * Primary font for body text
@@ -46,9 +47,11 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased min-h-screen flex flex-col`}
       >
-        <Header />
-        <main className="grow">{children}</main>
-        <Footer />
+        <AuthProvider>
+          <Header />
+          <main className="grow">{children}</main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );
