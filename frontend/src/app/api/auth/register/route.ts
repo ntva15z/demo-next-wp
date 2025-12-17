@@ -31,38 +31,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Call WordPress REST API to create user
-    // Note: This requires the WordPress REST API to allow user registration
-    // You may need to use a custom endpoint or WooCommerce customer endpoint
-    const response = await fetch(`${WORDPRESS_URL}/wp-json/wc/v3/customers`, {
+    // Call custom headless-auth endpoint for registration
+    const response = await fetch(`${WORDPRESS_URL}/wp-json/headless-auth/v1/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // Use WooCommerce API keys for authentication
-        Authorization: `Basic ${Buffer.from(
-          `${process.env.WC_CONSUMER_KEY}:${process.env.WC_CONSUMER_SECRET}`
-        ).toString("base64")}`,
       },
       body: JSON.stringify({
         email,
+        password,
         first_name: firstName,
         last_name: lastName,
-        username: email,
-        password,
       }),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      // Handle specific WooCommerce errors
-      if (data.code === "registration-error-email-exists") {
+      // Handle specific errors
+      if (data.code === "email_exists") {
         return NextResponse.json(
           { message: "Email này đã được sử dụng" },
           { status: 400 }
         );
       }
-      if (data.code === "registration-error-username-exists") {
+      if (data.code === "username_exists") {
         return NextResponse.json(
           { message: "Tên đăng nhập đã tồn tại" },
           { status: 400 }
@@ -78,10 +71,10 @@ export async function POST(request: NextRequest) {
       success: true,
       message: "Đăng ký thành công! Vui lòng đăng nhập.",
       user: {
-        id: data.id,
-        email: data.email,
-        firstName: data.first_name,
-        lastName: data.last_name,
+        id: data.user.id,
+        email: data.user.email,
+        firstName: data.user.first_name,
+        lastName: data.user.last_name,
       },
     });
   } catch (error) {

@@ -38,4 +38,15 @@ RUN chown -R www-data:www-data /var/www/html
 COPY install-plugins.sh /usr/local/bin/install-plugins.sh
 RUN chmod +x /usr/local/bin/install-plugins.sh
 
+# Copy JWT configuration script
+COPY scripts/configure-jwt.sh /usr/local/bin/configure-jwt.sh
+RUN chmod +x /usr/local/bin/configure-jwt.sh
+
+# Create custom entrypoint to run JWT config
+COPY scripts/docker-entrypoint-custom.sh /usr/local/bin/docker-entrypoint-custom.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint-custom.sh
+
 EXPOSE 80
+
+ENTRYPOINT ["docker-entrypoint-custom.sh"]
+CMD ["apache2-foreground"]
